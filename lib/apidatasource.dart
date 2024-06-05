@@ -13,7 +13,6 @@ class ApiDataSource {
     return movies;
   }
 
-  // Search movies based on title
   Future<List<Movie>> searchMovies(String title) async {
     final response = await BaseNetwork.get("search?title=$title");
     List<dynamic> moviesJson = response['movies'];
@@ -22,7 +21,6 @@ class ApiDataSource {
     return movies;
   }
 
-  // Load detail of a single user
   Future<Movie> loadDetailUser(String title) async {
     final response = await BaseNetwork.get(title);
     return Movie.fromJson(response);
