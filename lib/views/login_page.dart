@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:proyek_mobile_danielhanselc_123210063/views/homepage.dart';
 import 'package:proyek_mobile_danielhanselc_123210063/views/register_page.dart';
 import '../services/database_helper.dart';
-import '../services/encryption.dart';
 import '../services/session.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,7 +13,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final DatabaseHelper _databaseHelper = DatabaseHelper();
-  final EncryptionService _encryptionService = EncryptionService();
   final SessionService _sessionService = SessionService();
 
   @override
@@ -84,12 +82,9 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () async {
                   final username = _usernameController.text;
                   final password = _passwordController.text;
-                  final encryptedPassword =
-                      await _encryptionService.encrypt(password);
                   final user = await _databaseHelper.getUser(username);
 
-                  if (user != null &&
-                      user.password == encryptedPassword.toString()) {
+                  if (user != null && user.password == password.toString()) {
                     await _sessionService.saveSession(username);
                     Navigator.pushReplacement(
                       context,

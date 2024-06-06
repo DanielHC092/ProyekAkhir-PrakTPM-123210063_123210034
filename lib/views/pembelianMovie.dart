@@ -1,7 +1,9 @@
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:proyek_mobile_danielhanselc_123210063/models/DetailUserModel.dart';
 import 'package:proyek_mobile_danielhanselc_123210063/views/homepage.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class PurchaseDetailPage extends StatefulWidget {
   final Movie movieData;
@@ -34,10 +36,14 @@ class _PurchaseDetailPageState extends State<PurchaseDetailPage> {
     'LONDON': '+00:00',
   };
 
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
   @override
   void initState() {
     super.initState();
     setPriceBasedOnYear(widget.movieData.year);
+    initNotification();
+    requestNotificationPermissions();
   }
 
   void setPriceBasedOnYear(String? year) {
@@ -57,6 +63,52 @@ class _PurchaseDetailPageState extends State<PurchaseDetailPage> {
 
   double get convertedPrice =>
       priceInIDR * (currencyRates[selectedCurrency] ?? 1);
+
+  Future<void> initNotification() async {
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  Future<void> requestNotificationPermissions() async {
+    var status = await Permission.notification.status;
+    if (!status.isGranted) {
+      await Permission.notification.request();
+    }
+  }
+
+  Future<void> showNotification(String title, String body) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'channel_pembelian',
+      'Pembelian',
+      channelDescription: 'Saluran untuk notifikasi pembelian film',
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: true,
+      ticker: 'ticker',
+    );
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      title,
+      body,
+      platformChannelSpecifics,
+    );
+  }
+
+  Future<void> homepage() async {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const HomePage()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -176,39 +228,16 @@ class _PurchaseDetailPageState extends State<PurchaseDetailPage> {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      backgroundColor: Colors.brown,
-                      title: Text('Notification',
-                          style: TextStyle(color: Colors.white)),
-                      content: Text('Pembelian Berhasil Silahkan Check Email',
-                          style: TextStyle(color: Colors.white)),
-                      actions: <Widget>[
-                        TextButton(
-                          child:
-                              Text('OK', style: TextStyle(color: Colors.white)),
-                          onPressed: () {
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage()),
-                            );
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
+                String title = 'Pembelian Berhasil';
+                String body =
+                    'Pembelian tiket film ${widget.movieData.title} berhasil.';
+                showNotification(title, body);
+                homepage();
               },
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.brown,
-              ),
-              child: Text('Buy'),
+              child: Text('Beli'),
             ),
           ],
         ),

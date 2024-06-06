@@ -7,7 +7,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final SessionService sessionService = SessionService();
   final bool isLoggedIn = await sessionService.isLoggedIn();
-
   runApp(MyApp(isLoggedIn: isLoggedIn));
 }
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:proyek_mobile_danielhanselc_123210063/views/login_page.dart';
 import '../models/user.dart';
 import '../services/database_helper.dart';
-import '../services/encryption.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -13,7 +12,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final DatabaseHelper _databaseHelper = DatabaseHelper();
-  final EncryptionService _encryptionService = EncryptionService();
 
   @override
   Widget build(BuildContext context) {
@@ -82,11 +80,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   final username = _usernameController.text;
                   final password = _passwordController.text;
                   if (username != '' && password != '') {
-                    final encryptedPassword =
-                        await _encryptionService.encrypt(password);
-                    final newUser = User(
-                        username: username,
-                        password: encryptedPassword.toString());
+                    final newUser =
+                        User(username: username, password: password.toString());
 
                     try {
                       print('Attempting to register user: $username');

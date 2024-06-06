@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proyek_mobile_danielhanselc_123210063/models/DetailUserModel.dart';
 import 'package:proyek_mobile_danielhanselc_123210063/views/detaiMovie.dart';
-import 'package:proyek_mobile_danielhanselc_123210063/views/kritikSaran.dart';
 import 'package:proyek_mobile_danielhanselc_123210063/views/login_page.dart';
 import 'package:proyek_mobile_danielhanselc_123210063/views/profile_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,16 +49,10 @@ class _HomePageState extends State<HomePage> {
       case 1:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => FeedbackPage()),
-        );
-        break;
-      case 2:
-        Navigator.push(
-          context,
           MaterialPageRoute(builder: (context) => ProfilePage()),
         );
         break;
-      case 3:
+      case 2:
         _logout(context);
         break;
     }
@@ -121,16 +114,12 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.brown,
-        selectedItemColor: Colors.brown,
+        selectedItemColor: Colors.white,
         unselectedItemColor: Colors.black,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.feedback),
-            label: 'Kritik Saran',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
